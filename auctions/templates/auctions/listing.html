@@ -1,0 +1,20 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<main>
+    <h2>{{ listing.title }}</h2>
+        {% if listing.image %}
+            <img src={{ listing.image }}>
+        {% endif %}
+        <p>Price: {{ current_bid.amount }} ({{current_bid.user}}) </p>
+        <p>{{ listing.desc }}</p>
+        <p>dsdsds{{ listing.comments }}</p>
+
+        {% for comment in comments %}
+        <p>{{ comment.user }}: {{comment.comment}} </p>
+        {% endfor %}
+</main>
+
+
+    
+{% endblock %}
