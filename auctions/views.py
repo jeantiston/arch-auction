@@ -14,6 +14,21 @@ def index(request):
     })
 
 def listing(request, listing_id):
+    if request.method == "POST":
+        print(request.POST)
+        if request.POST['action'] == "watchlist":
+            pass
+        elif request.POST['action'] == "comment":
+            comment=Comment(
+                comment=request.POST["comment"],
+                user=request.user,
+                listing=Listing.objects.get(pk=listing_id)
+            )
+            comment.save()
+        elif request.POST['action'] == "bid":
+            pass
+        
+        # return HttpResponse(request.POST)
     return render(request, "auctions/listing.html", {
         "listing": Listing.objects.get(pk=listing_id),
         "comments": Comment.objects.filter(listing__id=listing_id),

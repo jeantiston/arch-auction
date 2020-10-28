@@ -7,7 +7,7 @@
             {% csrf_token %}
 
             {% if user.is_authenticated %}
-            <button type="button" value="watchlist" class="btn btn-primary">Add to Watchlist</button>
+            <button type="submit" name="action" value="add" class="btn btn-primary">Add to Watchlist</button>
 
             {% else %}
             {% endif %}
@@ -23,15 +23,16 @@
         {% if user.is_authenticated %}
         <h3>Add Bid</h3>
             <form method="post">
-                <input type="number" class="form-control" id="bid" min="{{current_bid.amount|add:"1"}}" placeholder="{{current_bid.amount|add:"1"}}">
-                <button type="button" value="bid" class="btn btn-primary">Bid</button>
+                {% csrf_token %}
+                <input type="number" name="bid" class="form-control" id="bid" min="{{current_bid.amount|add:"1"}}" placeholder="{{current_bid.amount|add:"1"}}">
+                <button type="submit" name="action" value="bid" class="btn btn-primary">Bid</button>
             </form>
         <h3>Comments</h3>
             <form method="post" >
                 {% csrf_token %}
-                <input type="text" class="form-control" id="comment" placeholder="Enter comment">
+                <input type="text" name="comment" class="form-control" id="comment" placeholder="Enter comment">
 
-                <button type="button" value="comment" class="btn btn-primary">Comment</button>
+                <button type="submit" name="action" value="comment" class="btn btn-primary">Comment</button>
             </form>
             {% for comment in comments %}
             <p>{{ comment.user }}: {{comment.comment}} </p>
