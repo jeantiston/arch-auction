@@ -29,17 +29,30 @@ class NewListingForm(forms.Form):
     status = forms.BooleanField(widget=forms.HiddenInput(), initial=True, required=True)
     # user = forms.CharField(initial=request.user.username, widget=forms.HiddenInput(), required=True)
 
-
+#Listing(title="Dragonfly Amber", desc="Wedding gift in Outlander", start_bid=10, image="", status=True, user=user)
 
 def create(request):
     if request.method == "POST":
-        return HttpResponseRedirect(reverse("index"))
+        print(request.POST)
+        listing = Listing(
+            title=request.POST['title'],
+            desc=request.POST['desc'],
+            start_bid=request.POST['start_bid'],
+            image=request.POST['image'],
+            category=AuctionCategories.objects.get(pk=int(request.POST['category'])),
+            status=request.POST['status'],
+            user=User.objects.get(pk=int(request.POST['user']))
+        )
+        listing.save()
+        listing_id = Listing.objects.last().id
+        print("listing_id: " + str(listing_id))
+        return HttpResponseRedirect(reverse("listing", args=[listing_id]))
 
     return render(request, "auctions/create.html", {
         "form": NewListingForm()
     })
-    print(list(AuctionCategories.objects.values_list('id', 'category')))
-    return HttpResponse(AuctionCategories.objects.values_list('category', flat=True))
+    # print(list(AuctionCategories.objects.values_list('id', 'category')))
+    # return HttpResponse(AuctionCategories.objects.values_list('category', flat=True))
 
 
 def login_view(request):
