@@ -2,17 +2,42 @@
 
 {% block body %}
 <main>
+    <div>
+        <form method="post" >
+            {% csrf_token %}
+
+            {% if user.is_authenticated %}
+            <button type="button" value="watchlist" class="btn btn-primary">Add to Watchlist</button>
+
+            {% else %}
+            {% endif %}
+        </form>
+    </div>
     <h2>{{ listing.title }}</h2>
         {% if listing.image %}
             <img src={{ listing.image }}>
         {% endif %}
         <p>Price: {{ current_bid.amount }} ({{current_bid.user}}) </p>
         <p>{{ listing.desc }}</p>
-        <p>dsdsds{{ listing.comments }}</p>
 
-        {% for comment in comments %}
-        <p>{{ comment.user }}: {{comment.comment}} </p>
-        {% endfor %}
+        {% if user.is_authenticated %}
+        <h3>Add Bid</h3>
+            <form method="post">
+                <input type="number" class="form-control" id="bid" min="{{current_bid.amount|add:"1"}}" placeholder="{{current_bid.amount|add:"1"}}">
+                <button type="button" value="bid" class="btn btn-primary">Bid</button>
+            </form>
+        <h3>Comments</h3>
+            <form method="post" >
+                {% csrf_token %}
+                <input type="text" class="form-control" id="comment" placeholder="Enter comment">
+
+                <button type="button" value="comment" class="btn btn-primary">Comment</button>
+            </form>
+            {% for comment in comments %}
+            <p>{{ comment.user }}: {{comment.comment}} </p>
+            {% endfor %}
+        {% endif %}
+
 </main>
 
 
