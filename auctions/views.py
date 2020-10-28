@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django import forms
 
 from .models import User, AuctionCategories, Listing, Bid, Comment
 
@@ -18,7 +19,27 @@ def listing(request, listing_id):
         "comments": Comment.objects.filter(listing__id=listing_id),
         "current_bid": Bid.objects.filter(listing__id=listing_id).last()
     })
-    return HttpResponse("Hello, world!")
+
+class NewListingForm(forms.Form):
+    title = forms.CharField(label="Listing Title", required=True)
+    desc = forms.CharField(label="Description", widget=forms.Textarea, required=True)
+    start_bid = forms.IntegerField(label="Start Bid", min_value=1, required=True)
+    image = forms.URLField(label="Image (Optional)")
+    category = forms.ChoiceField(label="Categories", choices=list(AuctionCategories.objects.values_list('id', 'category')))
+    status = forms.BooleanField(widget=forms.HiddenInput(), initial=True, required=True)
+    # user = forms.CharField(initial=request.user.username, widget=forms.HiddenInput(), required=True)
+
+
+
+def create(request):
+    if request.method == "POST":
+        return HttpResponseRedirect(reverse("index"))
+
+    return render(request, "auctions/create.html", {
+        "form": NewListingForm()
+    })
+    print(list(AuctionCategories.objects.values_list('id', 'category')))
+    return HttpResponse(AuctionCategories.objects.values_list('category', flat=True))
 
 
 def login_view(request):
