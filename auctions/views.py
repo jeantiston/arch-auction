@@ -10,7 +10,7 @@ from .models import User, AuctionCategories, Listing, Bid, Comment, WatchList
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.all()
+        "listings": Listing.objects.filter(status=True)
     })
 
 def listing(request, listing_id):
@@ -33,7 +33,7 @@ def listing(request, listing_id):
         elif request.POST['action'] == "close":
             listing.status = False
             listing.save()
-            
+
         elif request.POST['action'] == "comment":
             comment=Comment(
                 comment=request.POST['comment'],
