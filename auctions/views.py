@@ -14,39 +14,55 @@ def index(request):
     })
 
 def listing(request, listing_id):
+    bid_error = False
+    listing=Listing.objects.get(pk=listing_id)
+
     if request.method == "POST":
         print(request.POST)
         if request.POST['action'] == "add":
-            print("True")
             watchlist = WatchList(
-                listing=Listing.objects.get(pk=listing_id),
+                listing=listing,
                 user=request.user
             )
             watchlist.save()
             # request.user.user_watchlist.add(watchlist)
+        elif request.POST['action'] == "remove":
+            watchlist = WatchList.objects.filter(user=request.user,listing=listing_id)
+            watchlist.delete()
+
+        elif request.POST['action'] == "close":
+            listing.status = False
+            listing.save()
+            
         elif request.POST['action'] == "comment":
             comment=Comment(
                 comment=request.POST['comment'],
                 user=request.user,
-                listing=Listing.objects.get(pk=listing_id)
+                listing=listing
             )
             comment.save()
         elif request.POST['action'] == "bid":
-            bid=Bid(
-                    user=request.user,
-                    listing=Listing.objects.get(pk=listing_id),
-                    amount=request.POST['bid']
-            )
-            bid.save()
+            amount=int(request.POST['bid'])
+            if amount > Bid.objects.filter(listing__id=listing_id).last().amount:
+                bid=Bid(
+                        user=request.user,
+                        listing=listing,
+                        amount=amount
+                )
+                bid.save()
+            else:
+                bid_error = True
         
         # return HttpResponse(request.POST)
     # if User.objects.get(username=request.user).user_watchlist:
     #     print("True")
-
     return render(request, "auctions/listing.html", {
         "listing": Listing.objects.get(pk=listing_id),
         "comments": Comment.objects.filter(listing__id=listing_id),
-        "current_bid": Bid.objects.filter(listing__id=listing_id).last()
+        "current_bid": Bid.objects.filter(listing__id=listing_id).last(),
+        "on_watchlist": WatchList.objects.filter(user=request.user,listing=listing_id).exists(),
+        "bid_error": bid_error,
+        "owner": listing.user == request.user
     })
 
 class NewListingForm(forms.Form):

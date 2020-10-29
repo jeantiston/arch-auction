@@ -2,32 +2,50 @@
 
 {% block body %}
 <main>
+    {% if user.is_authenticated %}
     <div>
-        <form method="post" >
-            {% csrf_token %}
+        {% if listing.status %}
+            <form method="post" >
+                {% csrf_token %}
 
-            {% if user.is_authenticated %}
-            <button type="submit" name="action" value="add" class="btn btn-primary">Add to Watchlist</button>
+                {% if owner %}
+                    <button type="submit" name="action" value="close" class="btn btn-primary">Close Listing</button>
+                {% endif %}
 
-            {% else %}
-            {% endif %}
-        </form>
+                {% if on_watchlist %}
+                    <button type="submit" name="action" value="remove" class="btn btn-danger">Remove from Watchlist</button>
+                {% else %}
+                    <button type="submit" name="action" value="add" class="btn btn-primary">Add to Watchlist</button>
+                {% endif %}
+            </form>
+        {% elif not listing.status and user == current_bid.user %}
+            <div class="alert alert-success" role="alert">
+            You won this auction! Hooray!   
+            </div>
+        {% endif %}
     </div>
-    <h2>{{ listing.title }}</h2>
+    {% endif %}
+    <h2>{{ listing.title }} {%if not listing.status%}(CLOSED){% endif %} </h2>
         {% if listing.image %}
             <img src={{ listing.image }}>
         {% endif %}
         <p>Price: {{ current_bid.amount }} ({{current_bid.user}}) </p>
         <p>{{ listing.desc }}</p>
 
-        {% if user.is_authenticated %}
-        <h3>Add Bid</h3>
+        {% if user.is_authenticated and listing.status %}
+            <h3>Add Bid</h3>
+            {% if bid_error %}
+                <div class="alert alert-danger" role="alert">
+                    Bid must be greater than latest bid
+                </div>
+            {% endif %}
             <form method="post">
                 {% csrf_token %}
                 <input type="number" name="bid" class="form-control" id="bid" min="{{current_bid.amount|add:"1"}}" placeholder="{{current_bid.amount|add:"1"}}">
                 <button type="submit" name="action" value="bid" class="btn btn-primary">Bid</button>
             </form>
-        <h3>Comments</h3>
+
+            <h3>Comments</h3>
             <form method="post" >
                 {% csrf_token %}
                 <input type="text" name="comment" class="form-control" id="comment" placeholder="Enter comment">
