@@ -99,6 +99,19 @@ def create(request):
     # print(list(AuctionCategories.objects.values_list('id', 'category')))
     # return HttpResponse(AuctionCategories.objects.values_list('category', flat=True))
 
+def watchlist(request):
+    # print(WatchList.objects.filter(user=request.user).values_list('listing', flat=True))
+    watchlist = WatchList.objects.filter(user=request.user).values_list('listing', flat=True)
+    listings = Listing.objects.filter(pk__in=watchlist)
+    # print(listings)
+    return render(request, "auctions/watchlist.html", {
+        "listings": listings
+    })
+    return HttpResponse("hello")
+
+def categories(request,category):
+    return HttpResponse("hello" + category)
+
 
 def login_view(request):
     if request.method == "POST":
