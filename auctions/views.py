@@ -115,7 +115,7 @@ def categories(request):
     })
 
 def category(request, category):
-    listings = Listing.objects.filter(category__category__contains=category)
+    listings = Listing.objects.filter(category__category__contains=category, status=True)
     print(listings)
     return render(request, "auctions/category.html", {
         "listings": listings,
