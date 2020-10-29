@@ -100,17 +100,27 @@ def create(request):
     # return HttpResponse(AuctionCategories.objects.values_list('category', flat=True))
 
 def watchlist(request):
-    # print(WatchList.objects.filter(user=request.user).values_list('listing', flat=True))
+    # print(User.objects.filter(user_watchlist=request.user))
     watchlist = WatchList.objects.filter(user=request.user).values_list('listing', flat=True)
-    listings = Listing.objects.filter(pk__in=watchlist)
+    listings = Listing.objects.filter(pk__in=watchlist, status=True)
     # print(listings)
     return render(request, "auctions/watchlist.html", {
         "listings": listings
     })
     return HttpResponse("hello")
 
-def categories(request,category):
-    return HttpResponse("hello" + category)
+def categories(request):
+    return render(request, "auctions/categories.html", {
+        "categories": AuctionCategories.objects.all
+    })
+
+def category(request, category):
+    listings = Listing.objects.filter(category__category__contains=category)
+    print(listings)
+    return render(request, "auctions/category.html", {
+        "listings": listings,
+        "category": category
+    })
 
 
 def login_view(request):
