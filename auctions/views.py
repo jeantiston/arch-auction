@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django import forms
 
-from .models import User, AuctionCategories, Listing, Bid, Comment
+from .models import User, AuctionCategories, Listing, Bid, Comment, WatchList
 
 
 def index(request):
@@ -16,19 +16,33 @@ def index(request):
 def listing(request, listing_id):
     if request.method == "POST":
         print(request.POST)
-        if request.POST['action'] == "watchlist":
-            pass
+        if request.POST['action'] == "add":
+            print("True")
+            watchlist = WatchList(
+                listing=Listing.objects.get(pk=listing_id),
+                user=request.user
+            )
+            watchlist.save()
+            # request.user.user_watchlist.add(watchlist)
         elif request.POST['action'] == "comment":
             comment=Comment(
-                comment=request.POST["comment"],
+                comment=request.POST['comment'],
                 user=request.user,
                 listing=Listing.objects.get(pk=listing_id)
             )
             comment.save()
         elif request.POST['action'] == "bid":
-            pass
+            bid=Bid(
+                    user=request.user,
+                    listing=Listing.objects.get(pk=listing_id),
+                    amount=request.POST['bid']
+            )
+            bid.save()
         
         # return HttpResponse(request.POST)
+    # if User.objects.get(username=request.user).user_watchlist:
+    #     print("True")
+
     return render(request, "auctions/listing.html", {
         "listing": Listing.objects.get(pk=listing_id),
         "comments": Comment.objects.filter(listing__id=listing_id),
