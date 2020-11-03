@@ -1,9 +1,31 @@
 {% extends "auctions/layout.html" %}
+{% load static %}
+{% block styles %}
+        <link href="{% static 'auctions/listings.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block body %}
     <h2>Active Listings</h2>
+    <!-- <img src="./static/auctions/listings/image-228B.jpg" /> -->
+
+    <main>
     {% for listing in listings %}
-    <div>
+    {% if listing.image %}
+    <div class="listing" style="background-image: url({{ listing.image }})">
+    {% else %}
+    <div class="listing" style="background-color: #60636D";>
+    {% endif %}
+        <p class="desc">{{ listing.desc }}</p>
+        <div class="details">
+          
+            <h3 class="title"><a href="{% url 'listing' listing.id %}">
+                {{ listing.title }}
+            </a></h3>
+            <p class="price">Price: {{ listing.start_bid }}</p>
+          
+        </div>
+    </div>
+    <!-- <div>
         {% if listing.image %}
             <img src="{{ listing.image }}">
         {% endif %}
@@ -11,8 +33,8 @@
         <p>Price: {{ listing.start_bid }} </p>
         <p>{{ listing.desc }}</p>
         <p>{{ listing.id }}</p>
-    </div>
+    </div> -->
     {% endfor %}
-
+</main>
     
 {% endblock %}

@@ -9,6 +9,7 @@ from .models import User, AuctionCategories, Listing, Bid, Comment, WatchList
 
 
 def index(request):
+    
     return render(request, "auctions/index.html", {
         "listings": Listing.objects.filter(status=True)
     })
@@ -16,6 +17,13 @@ def index(request):
 def listing(request, listing_id):
     bid_error = False
     listing=Listing.objects.get(pk=listing_id)
+
+    current_bid = Bid.objects.filter(listing__id=listing_id).last()
+
+    if current_bid is None:
+        current_bid = listing.start_bid
+    else:
+        current_bid = current_bid.amount
 
     if request.method == "POST":
         print(request.POST)
@@ -43,7 +51,9 @@ def listing(request, listing_id):
             comment.save()
         elif request.POST['action'] == "bid":
             amount=int(request.POST['bid'])
-            if amount > Bid.objects.filter(listing__id=listing_id).last().amount:
+
+            if amount > current_bid:
+                current_bid = amount
                 bid=Bid(
                         user=request.user,
                         listing=listing,
@@ -56,13 +66,16 @@ def listing(request, listing_id):
         # return HttpResponse(request.POST)
     # if User.objects.get(username=request.user).user_watchlist:
     #     print("True")
+
+
     return render(request, "auctions/listing.html", {
         "listing": Listing.objects.get(pk=listing_id),
         "comments": Comment.objects.filter(listing__id=listing_id),
-        "current_bid": Bid.objects.filter(listing__id=listing_id).last(),
+        "current_bid": current_bid,
         "on_watchlist": WatchList.objects.filter(user=request.user,listing=listing_id).exists(),
         "bid_error": bid_error,
-        "owner": listing.user == request.user
+        "owner": listing.user == request.user,
+        "test": 123
     })
 
 class NewListingForm(forms.Form):

@@ -1,3 +1,104 @@
-body {
+/* body {
     padding: 10px;
+} */
+
+@import url('https://fonts.googleapis.com/css2?family=Spartan:wght@300;500;700&display=swap');
+
+:root {
+    --dark-blue: #1B1D23;
+    --dark-grey: #60636D;
+    --medium-grey: #7D828F;
+    --light-gray: #C8CCD8;
+    --lighter-gray: #EEEFF4;
+    --red: #DF5656;
+    --font-primary: "Spartan", sans-serif;
+    --font-weight-light: 300;
+    --font-weight-medium: 500;
+    --font-weight-strong: 700;
+    --font-size-h1: 6rem;
+    --font-size-h2: 3rem;
+    --font-size-h3: 1rem;
+    --font-size-h4: 1.35rem;
+    --font-size-text: 1.15rem;
+  }
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0; 
+}
+
+body {
+    background-color: #ffffff;
+    color: var(--dark-blue);
+    font-family: var(--font-primary); 
+    font-weight: var(--font-weight-medium);
+}
+
+h1, h2, h3{
+    font-weight: var(--font-weight-strong);
+}
+
+h1 {
+    font-size: var(--font-size-h1);
+    font-size: clamp(4rem, 7vw, var(--font-size-h1)); }
+  
+  
+h2 {
+    font-size: var(--font-size-h2);
+    font-size: clamp(2rem, 2vw, var(--font-size-h2));
+    text-align: center; 
+    /* padding: 20px 0; */
+    padding-bottom: 40px;
+}
+
+h3 {
+    font-size: var(--font-size-h3);
+    font-size: clamp(0.5rem, 2vw, var(--font-size-h3));
+
+}
+
+a {
+    color: var(--medium-grey);
+    font-weight: var(--font-weight-strong);
+    text-decoration: none; 
+}
+
+a:hover {
+    color: var(--dark-blue);
+}
+
+li{
+    list-style-type: none;
+}
+
+body{
+    margin: 0 8vw;
+    width: 90vw;
+}
+
+nav{
+    display: flex;
+    align-items: center;
+    margin: 50px 0;
+    /* border: 5px solid orange; */
+
+}
+
+.nav{
+    display: flex;
+}
+
+li{
+    padding: 0 20px;
+}
+
+.logo{
+    width: 97px;
+    height: 40px;
+    margin-left: 164;
 }
