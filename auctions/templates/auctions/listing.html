@@ -45,18 +45,22 @@
                 <input type="number" name="bid" class="form-control" id="bid" min="{{current_bid|add:"1"}}" placeholder="{{current_bid|add:"1"}}">
                 <button type="submit" name="action" value="bid" class="btn btn-primary">Bid</button>
             </form>
+        {% endif %}
 
             <h3>Comments</h3>
+        {% if user.is_authenticated %}
             <form method="post" >
                 {% csrf_token %}
                 <input type="text" name="comment" class="form-control" id="comment" placeholder="Enter comment">
 
                 <button type="submit" name="action" value="comment" class="btn btn-primary">Comment</button>
             </form>
-            {% for comment in comments %}
-            <p>{{ comment.user }}: {{comment.comment}} </p>
-            {% endfor %}
         {% endif %}
+
+        {% for comment in comments %}
+        <p>{{ comment.user }}: {{comment.comment}} </p>
+        {% endfor %}
+
 
 </main>
 

@@ -9,10 +9,34 @@ from .models import User, AuctionCategories, Listing, Bid, Comment, WatchList
 
 
 def index(request):
-    listings = Listing.objects.filter(status=True).values('title','desc','image','listing_bids__amount')
-    print(listings.last().listing_bids__amount)
+    # listings = Listing.objects.filter(status=True).values('title','desc','image','listing_bids')
+    # listings = Listing.objects.filter(status=True).values('title','desc','image','listing_bids','start_bid')
+    listings = Listing.objects.filter(status=True)
+    print(listings.last().listing_bids.last())
+    clean_listings = []
+
+    for listing in listings:
+        last_bid = listing.listing_bids.last()
+
+        if last_bid is None:
+            amount = listing.start_bid
+        else:
+            amount = last_bid.amount
+
+        clean_listing = {
+            "id": listing.id,
+            "title": listing.title,
+            "desc": listing.desc,
+            "amount": amount,
+            "image": listing.image
+        }
+        
+        clean_listings.append(clean_listing)
+
+    # print(clean_listings)
+
     return render(request, "auctions/index.html", {
-        "listings": listings
+        "listings": clean_listings
     })
 
 def listing(request, listing_id):
@@ -67,13 +91,16 @@ def listing(request, listing_id):
         # return HttpResponse(request.POST)
     # if User.objects.get(username=request.user).user_watchlist:
     #     print("True")
-
+    if request.user.is_authenticated:
+        on_watchlist = WatchList.objects.filter(user=request.user,listing=listing_id).exists()
+    else:
+        on_watchlist = False
 
     return render(request, "auctions/listing.html", {
         "listing": Listing.objects.get(pk=listing_id),
         "comments": Comment.objects.filter(listing__id=listing_id),
         "current_bid": current_bid,
-        "on_watchlist": WatchList.objects.filter(user=request.user,listing=listing_id).exists(),
+        "on_watchlist": on_watchlist,
         "bid_error": bid_error,
         "owner": listing.user == request.user,
         "test": 123

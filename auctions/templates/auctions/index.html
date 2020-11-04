@@ -21,20 +21,12 @@
             <h3 class="title"><a href="{% url 'listing' listing.id %}">
                 {{ listing.title }}
             </a></h3>
-            <p class="price">Price: {{ listing.start_bid }}</p>
-            <p class="price">Price: {{ listing.listing_bids }}</p>
+            <p class="price">Price: {{ listing.amount }}</p>
+            <!-- <p class="price">Price: {{ listing.listing_bids }}</p> -->
           
         </div>
     </div>
-    <!-- <div>
-        {% if listing.image %}
-            <img src="{{ listing.image }}">
-        {% endif %}
-        <a href="{% url 'listing' listing.id %}"><h3> {{ listing.title }} </h3></a>
-        <p>Price: {{ listing.start_bid }} </p>
-        <p>{{ listing.desc }}</p>
-        <p>{{ listing.id }}</p>
-    </div> -->
+
     {% endfor %}
 </main>
     
