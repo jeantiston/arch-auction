@@ -118,37 +118,43 @@ class NewListingForm(forms.Form):
 #Listing(title="Dragonfly Amber", desc="Wedding gift in Outlander", start_bid=10, image="", status=True, user=user)
 
 def create(request):
-    if request.method == "POST":
-        print(request.POST)
-        listing = Listing(
-            title=request.POST['title'],
-            desc=request.POST['desc'],
-            start_bid=request.POST['start_bid'],
-            image=request.POST['image'],
-            category=AuctionCategories.objects.get(pk=int(request.POST['category'])),
-            status=request.POST['status'],
-            user=User.objects.get(pk=int(request.POST['user']))
-        )
-        listing.save()
-        listing_id = Listing.objects.last().id
-        print("listing_id: " + str(listing_id))
-        return HttpResponseRedirect(reverse("listing", args=[listing_id]))
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            print(request.POST)
+            listing = Listing(
+                title=request.POST['title'],
+                desc=request.POST['desc'],
+                start_bid=request.POST['start_bid'],
+                image=request.POST['image'],
+                category=AuctionCategories.objects.get(pk=int(request.POST['category'])),
+                status=request.POST['status'],
+                user=User.objects.get(pk=int(request.POST['user']))
+            )
+            listing.save()
+            listing_id = Listing.objects.last().id
+            print("listing_id: " + str(listing_id))
+            return HttpResponseRedirect(reverse("listing", args=[listing_id]))
 
-    return render(request, "auctions/create.html", {
-        "form": NewListingForm()
-    })
+    
+        return render(request, "auctions/create.html", {
+            "form": NewListingForm()
+        })
+    else:
+        return HttpResponseRedirect(reverse("login"))
     # print(list(AuctionCategories.objects.values_list('id', 'category')))
     # return HttpResponse(AuctionCategories.objects.values_list('category', flat=True))
 
 def watchlist(request):
-    # print(User.objects.filter(user_watchlist=request.user))
-    watchlist = WatchList.objects.filter(user=request.user).values_list('listing', flat=True)
-    listings = Listing.objects.filter(pk__in=watchlist, status=True)
-    # print(listings)
-    return render(request, "auctions/watchlist.html", {
-        "listings": listings
-    })
-    return HttpResponse("hello")
+    if request.user.is_authenticated:
+        # print(User.objects.filter(user_watchlist=request.user))
+        watchlist = WatchList.objects.filter(user=request.user).values_list('listing', flat=True)
+        listings = Listing.objects.filter(pk__in=watchlist, status=True)
+        # print(listings)
+        return render(request, "auctions/watchlist.html", {
+            "listings": listings
+        })
+    else:
+        return HttpResponseRedirect(reverse("login"))
 
 def categories(request):
     return render(request, "auctions/categories.html", {
