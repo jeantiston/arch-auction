@@ -1,65 +1,81 @@
 {% extends "auctions/layout.html" %}
+{% load static %}
+{% block styles %}
+        <link href="{% static 'auctions/listing.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block body %}
 <main>
     <h2>{{ listing.title }} {%if not listing.status%}(CLOSED){% endif %} </h2>
 
-    {% if user.is_authenticated %}
-    <div>
-        {% if listing.status %}
-            <form method="post" >
-                {% csrf_token %}
-
-                {% if owner %}
-                    <button type="submit" name="action" value="close" class="btn btn-primary">Close Listing</button>
-                {% endif %}
-
-                {% if on_watchlist %}
-                    <button type="submit" name="action" value="remove" class="btn btn-danger">Remove from Watchlist</button>
-                {% else %}
-                    <button type="submit" name="action" value="add" class="btn btn-primary">Add to Watchlist</button>
-                {% endif %}
-            </form>
-        {% elif not listing.status and user == current_bid.user %}
-            <div class="alert alert-success" role="alert">
-            You won this auction! Hooray!   
-            </div>
-        {% endif %}
-    </div>
-    {% endif %}
+    <div class="listing-main">
         {% if listing.image %}
-            <img class="listing-img" src={{ listing.image }}>
+        <img class="listing-img" src={{ listing.image }}>
+        {% else %}
+        <img class="listing-img" src="{% static 'auctions/listings/image-228b.jpg' %}">
         {% endif %}
-        <p><b>Price:</b> ${{ current_bid }}M </p>
-        <p>{{ listing.desc }}</p>
-
-        {% if user.is_authenticated and listing.status %}
-            <h3>Add Bid</h3>
-            {% if bid_error %}
-                <div class="alert alert-danger" role="alert">
+        
+        <div class="action-container">
+            <p><b>Current Bid:</b> ${{ current_bid }}M </p>
+            
+            {% if user.is_authenticated and listing.status %}
+                <h3>Add Bid</h3>
+                {% if bid_error %}
+                    <div class="alert alert-danger" role="alert">
                     Bid must be greater than latest bid
+                    </div>
+                {% endif %}
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="number" name="bid" class="form-control" id="bid" min="{{current_bid|add:"1"}}" placeholder="{{current_bid|add:"1"}}"></br>
+                    <button type="submit" name="action" value="bid" class="btn btn-dark btn-block">Bid</button></br>
+                </form>
+            {% endif %}
+            
+            {% if user.is_authenticated %}
+                <div>
+
+                {% if listing.status %}
+                    <form method="post" >
+                        {% csrf_token %}
+                        
+                        {% if owner %}
+                            <button type="submit" name="action" value="close" class="btn btn-light btn-block">Close Listing</button></br>
+                        {% endif %}
+                        
+                        {% if on_watchlist %}
+                            <button type="submit" name="action" value="remove" class="btn btn-light btn-block">Remove from Watchlist</button></br>
+                        {% else %}
+                            <button type="submit" name="action" value="add" class="btn btn-dark btn-block">Add to Watchlist</button></br>
+                        {% endif %}
+                    </form>
+
+                {% elif not listing.status and user == current_bid.user %}
+                    <div class="alert alert-success" role="alert">
+                        You won this auction! Hooray!
+                    </div>
+                {% endif %}
                 </div>
             {% endif %}
-            <form method="post">
-                {% csrf_token %}
-                <input type="number" name="bid" class="form-control" id="bid" min="{{current_bid|add:"1"}}" placeholder="{{current_bid|add:"1"}}">
-                <button type="submit" name="action" value="bid" class="btn btn-primary">Bid</button>
-            </form>
-        {% endif %}
+        </div>
+    </div>
+    <h3>Description</h3>
+    <p>{{ listing.desc }}</p>
 
-            <h3>Comments</h3>
-        {% if user.is_authenticated %}
-            <form method="post" >
-                {% csrf_token %}
-                <input type="text" name="comment" class="form-control" id="comment" placeholder="Enter comment">
+    <h3>Comments</h3>
+    {% if user.is_authenticated %}
+        <form method="post" >
+            {% csrf_token %}
+            <input type="text" name="comment" class="form-control" id="comment" placeholder="Enter comment">
 
-                <button type="submit" name="action" value="comment" class="btn btn-primary">Comment</button>
-            </form>
-        {% endif %}
+            <button type="submit" name="action" value="comment" class="btn btn-dark">Comment</button>
+        </form>
+    {% endif %}
 
-        {% for comment in comments %}
-        <p>{{ comment.user }}: {{comment.comment}} </p>
-        {% endfor %}
+    {% for comment in comments %}
+    <p>{{ comment.user }}: {{comment.comment}} </p>
+    {% endfor %}
 
 
 </main>

@@ -12,7 +12,7 @@ def index(request):
     # listings = Listing.objects.filter(status=True).values('title','desc','image','listing_bids')
     # listings = Listing.objects.filter(status=True).values('title','desc','image','listing_bids','start_bid')
     listings = Listing.objects.filter(status=True)
-    print(listings.last().listing_bids.last())
+    # print(listings.last().listing_bids.last())
     clean_listings = []
 
     for listing in listings:

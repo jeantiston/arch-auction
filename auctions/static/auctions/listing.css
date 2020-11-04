@@ -1,0 +1,21 @@
+.listing-img{
+    width: 100%;
+    max-width: 40vw;
+    height: auto;
+}
+
+.listing-main{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+
+.action-container{
+    padding-left: 30px;
+    flex: 1;
+}
+
+button{
+    padding: 20px 10px;
+}

@@ -15,7 +15,7 @@ main{
     /* object-fit: cover; */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-end;
     background-repeat: no-repeat;
     background-position: center;
     
@@ -25,7 +25,7 @@ main{
     /* border: 5px solid greenyellow; */
     padding-top: 70px;
     padding-bottom: 50px;
-    background: linear-gradient(0deg,   rgb(27, 29, 35,0.8) 50%, transparent 100%);
+    background: linear-gradient(0deg,   rgb(27, 29, 35,0.7) 50%, transparent 100%);
 
 }
 
