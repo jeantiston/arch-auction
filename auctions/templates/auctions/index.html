@@ -14,16 +14,20 @@
     {% else %}
     <div class="listing view overlay" style="background-color: #60636D; background-image: url({% static 'auctions/listings/image-228b.jpg' %});">
     {% endif %}
-        <div class="mask flex-center rgba-black-strong">
-            <!-- <p class="white-text">Strong overlay</p> -->
-            <p class="desc white-text">{{ listing.desc }}</p>
-        </div>
+        <a href="{% url 'listing' listing.id %}">
+            <div class="mask flex-center rgba-black-strong">
+                <!-- <p class="white-text">Strong overlay</p> -->
+                <p class="desc white-text">{{ listing.desc }}</p>
+            </div>
+        </a>
         
         <div class="details">
           
-            <h3 class="title"><a href="{% url 'listing' listing.id %}">
+            <h3 class="title">
+                <!-- <a href="{% url 'listing' listing.id %}"> -->
                 {{ listing.title }}
-            </a></h3>
+            <!-- </a> -->
+            </h3>
             <p class="price">Price: {{ listing.amount }}</p>
             <!-- <p class="price">Price: {{ listing.listing_bids }}</p> -->
           
