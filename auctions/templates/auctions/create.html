@@ -7,7 +7,8 @@
         {% csrf_token %}
         {{ form }}
         <input type="hidden" name="user" value="{{user.id}}" id="id_user">
-        <input type="submit">
+        </br>
+        <input class="btn btn-dark btn-block" type="submit">
     </form>
 </main>
 
