@@ -9,10 +9,7 @@ from .models import User, AuctionCategories, Listing, Bid, Comment, WatchList
 
 
 def index(request):
-    # listings = Listing.objects.filter(status=True).values('title','desc','image','listing_bids')
-    # listings = Listing.objects.filter(status=True).values('title','desc','image','listing_bids','start_bid')
     listings = Listing.objects.filter(status=True)
-    # print(listings.last().listing_bids.last())
     clean_listings = []
 
     for listing in listings:
@@ -33,13 +30,13 @@ def index(request):
         
         clean_listings.append(clean_listing)
 
-    # print(clean_listings)
 
     return render(request, "auctions/index.html", {
         "listings": clean_listings
     })
 
 def listing(request, listing_id):
+    current_bid_user = None
     bid_error = False
     is_starting = True
     listing=Listing.objects.get(pk=listing_id)
@@ -54,14 +51,12 @@ def listing(request, listing_id):
         is_starting = False
 
     if request.method == "POST":
-        print(request.POST)
         if request.POST['action'] == "add":
             watchlist = WatchList(
                 listing=listing,
                 user=request.user
             )
             watchlist.save()
-            # request.user.user_watchlist.add(watchlist)
         elif request.POST['action'] == "remove":
             watchlist = WatchList.objects.filter(user=request.user,listing=listing_id)
             watchlist.delete()
@@ -91,9 +86,6 @@ def listing(request, listing_id):
             else:
                 bid_error = True
         
-        # return HttpResponse(request.POST)
-    # if User.objects.get(username=request.user).user_watchlist:
-    #     print("True")
     if request.user.is_authenticated:
         on_watchlist = WatchList.objects.filter(user=request.user,listing=listing_id).exists()
     else:
@@ -117,14 +109,10 @@ class NewListingForm(forms.Form):
     image = forms.URLField(label="Image (Optional)", required=False)
     category = forms.ChoiceField(label="Category (Optional)", choices=list(AuctionCategories.objects.values_list('id', 'category')))
     status = forms.BooleanField(widget=forms.HiddenInput(), initial=True, required=True)
-    # user = forms.CharField(initial=request.user.username, widget=forms.HiddenInput(), required=True)
-
-#Listing(title="Dragonfly Amber", desc="Wedding gift in Outlander", start_bid=10, image="", status=True, user=user)
 
 def create(request):
     if request.user.is_authenticated:
         if request.method == "POST":
-            print(request.POST)
             listing = Listing(
                 title=request.POST['title'],
                 desc=request.POST['desc'],
@@ -136,7 +124,6 @@ def create(request):
             )
             listing.save()
             listing_id = Listing.objects.last().id
-            print("listing_id: " + str(listing_id))
             return HttpResponseRedirect(reverse("listing", args=[listing_id]))
 
     
@@ -145,15 +132,11 @@ def create(request):
         })
     else:
         return HttpResponseRedirect(reverse("login"))
-    # print(list(AuctionCategories.objects.values_list('id', 'category')))
-    # return HttpResponse(AuctionCategories.objects.values_list('category', flat=True))
 
 def watchlist(request):
     if request.user.is_authenticated:
-        # print(User.objects.filter(user_watchlist=request.user))
         watchlist = WatchList.objects.filter(user=request.user).values_list('listing', flat=True)
         listings = Listing.objects.filter(pk__in=watchlist)
-        # print(listings)
         return render(request, "auctions/watchlist.html", {
             "listings": listings
         })
@@ -167,7 +150,6 @@ def categories(request):
 
 def category(request, category):
     listings = Listing.objects.filter(category__category__contains=category, status=True)
-    print(listings)
     return render(request, "auctions/category.html", {
         "listings": listings,
         "category": category
