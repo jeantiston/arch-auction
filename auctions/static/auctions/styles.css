@@ -77,7 +77,7 @@ li{
 }
 
 body{
-    margin: 0 8vw;
+    margin: 0 5vw;
     width: 90vw;
 }
 
@@ -85,6 +85,7 @@ nav{
     display: flex;
     align-items: center;
     margin: 50px 0;
+    justify-content: space-between;
     /* border: 5px solid orange; */
 
 }
