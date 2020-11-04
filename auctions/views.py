@@ -75,8 +75,9 @@ def listing(request, listing_id):
         elif request.POST['action'] == "bid":
             amount=int(request.POST['bid'])
 
-            if amount > current_bid:
+            if is_starting and amount >= current_bid or not is_starting and amount > current_bid:
                 current_bid = amount
+                is_starting = False
                 bid=Bid(
                         user=request.user,
                         listing=listing,
