@@ -9,9 +9,10 @@ from .models import User, AuctionCategories, Listing, Bid, Comment, WatchList
 
 
 def index(request):
-    
+    listings = Listing.objects.filter(status=True).values('title','desc','image','listing_bids__amount')
+    print(listings.last().listing_bids__amount)
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.filter(status=True)
+        "listings": listings
     })
 
 def listing(request, listing_id):
