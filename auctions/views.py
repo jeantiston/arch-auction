@@ -41,6 +41,7 @@ def index(request):
 
 def listing(request, listing_id):
     bid_error = False
+    is_starting = True
     listing=Listing.objects.get(pk=listing_id)
 
     current_bid = Bid.objects.filter(listing__id=listing_id).last()
@@ -48,7 +49,9 @@ def listing(request, listing_id):
     if current_bid is None:
         current_bid = listing.start_bid
     else:
+        current_bid_user = current_bid.user
         current_bid = current_bid.amount
+        is_starting = False
 
     if request.method == "POST":
         print(request.POST)
@@ -103,7 +106,8 @@ def listing(request, listing_id):
         "on_watchlist": on_watchlist,
         "bid_error": bid_error,
         "owner": listing.user == request.user,
-        "test": 123
+        "is_starting": is_starting,
+        "current_bid_user": current_bid_user
     })
 
 class NewListingForm(forms.Form):
@@ -148,7 +152,7 @@ def watchlist(request):
     if request.user.is_authenticated:
         # print(User.objects.filter(user_watchlist=request.user))
         watchlist = WatchList.objects.filter(user=request.user).values_list('listing', flat=True)
-        listings = Listing.objects.filter(pk__in=watchlist, status=True)
+        listings = Listing.objects.filter(pk__in=watchlist)
         # print(listings)
         return render(request, "auctions/watchlist.html", {
             "listings": listings

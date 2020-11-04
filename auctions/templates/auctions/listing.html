@@ -19,18 +19,26 @@
             <p><b>Current Bid:</b> ${{ current_bid }}M </p>
             
             {% if user.is_authenticated and listing.status %}
-                <h3>Add Bid</h3>
-                {% if bid_error %}
-                    <div class="alert alert-danger" role="alert">
-                    Bid must be greater than latest bid
-                    </div>
-                {% endif %}
+                {% if not owner %}
+                    <h3>Add Bid</h3>
+                    {% if bid_error %}
+                        <div class="alert alert-danger" role="alert">
+                        Bid must be greater than latest bid
+                        </div>
+                    {% endif %}
                 
-                <form method="post">
-                    {% csrf_token %}
-                    <input type="number" name="bid" class="form-control" id="bid" min="{{current_bid|add:"1"}}" placeholder="{{current_bid|add:"1"}}"></br>
-                    <button type="submit" name="action" value="bid" class="btn btn-dark btn-block">Bid</button></br>
-                </form>
+                
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if is_starting %}
+                            <input type="number" name="bid" class="form-control" id="bid" min="{{current_bid}}" placeholder="{{current_bid}}"></br>
+                        {% else %}
+                            <input type="number" name="bid" class="form-control" id="bid" min="{{current_bid|add:"1"}}" placeholder="{{current_bid|add:"1"}}"></br>
+                        {% endif %}
+
+                        <button type="submit" name="action" value="bid" class="btn btn-dark btn-block">Bid</button></br>
+                    </form>
+                {% endif %}
             {% endif %}
             
             {% if user.is_authenticated %}
@@ -51,8 +59,8 @@
                         {% endif %}
                     </form>
 
-                {% elif not listing.status and user == current_bid.user %}
-                    <div class="alert alert-success" role="alert">
+                {% elif not listing.status and user == current_bid_user %}
+                    <div class="alert alert-dark" role="alert">
                         You won this auction! Hooray!
                     </div>
                 {% endif %}
