@@ -121,7 +121,7 @@ def create(request):
                 image=request.POST['image'],
                 category=AuctionCategories.objects.get(pk=int(request.POST['category'])),
                 status=request.POST['status'],
-                user=User.objects.get(pk=int(request.POST['user']))
+                user=User.objects.get(username=request.POST['user'])
             )
             listing.save()
             listing_id = Listing.objects.last().id
