@@ -8,17 +8,24 @@ https://docs.djangoproject.com/en/3.0/howto/deployment/wsgi/
 """
 
 import os
+import sys
+import django
 import time
 import traceback
 import signal
 import sys
 
-from django.core.wsgi import get_wsgi_application
+path='/var/www/arch/html/commerce'
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'commerce.settings')
+if path not in sys.path:
+  sys.path.append(path)
 
+os.environ['DJANGO_SETTINGS_MODULE'] = 'commerce.settings'
+
+import django.core.handlers.wsgi
+django.setup()
 try:
-    application = get_wsgi_application()
+    application = django.core.handlers.wsgi.WSGIHandler()
     print('WSGI without exception')
 except Exception:
     print('handling WSGI exception')
