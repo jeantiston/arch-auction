@@ -15,10 +15,15 @@ import traceback
 import signal
 import sys
 
+from dotenv import load_dotenv
+
 path='/var/www/arch/html/commerce'
 
 if path not in sys.path:
   sys.path.append(path)
+
+project_folder = os.path.expanduser(path)
+load_dotenv(os.path.join(project_folder, '.env'))
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'commerce.settings'
 
