@@ -121,7 +121,7 @@ def create(request):
                 image=request.POST['image'],
                 category=AuctionCategories.objects.get(pk=int(request.POST['category'])),
                 status=request.POST['status'],
-                user=User.objects.get(username=request.POST['user'])
+                user=User.objects.get(pk=request.POST['user'])
             )
             listing.save()
             listing_id = Listing.objects.last().id
@@ -150,7 +150,7 @@ def categories(request):
     })
 
 def category(request, category):
-    listings = Listing.objects.filter(category__category__contains=category, status=True)
+    listings = Listing.objects.filter(category__category__icontains=category, status=True)
     return render(request, "auctions/category.html", {
         "listings": listings,
         "category": category

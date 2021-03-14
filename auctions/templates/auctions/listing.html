@@ -31,9 +31,9 @@
                     <form method="post">
                         {% csrf_token %}
                         {% if is_starting %}
-                            <input type="number" name="bid" class="form-control" id="bid" min="{{current_bid}}" placeholder="{{current_bid}}"></br>
+                            <input type="number" name="bid" class="form-control" id="bid" min="{{current_bid}}" placeholder="{{current_bid}}" required></br>
                         {% else %}
-                            <input type="number" name="bid" class="form-control" id="bid" min="{{current_bid|add:"1"}}" placeholder="{{current_bid|add:"1"}}"></br>
+                            <input type="number" name="bid" class="form-control" id="bid" min="{{current_bid|add:"1"}}" placeholder="{{current_bid|add:"1"}}" required></br>
                         {% endif %}
 
                         <button type="submit" name="action" value="bid" class="btn btn-dark btn-block">Bid</button></br>
@@ -75,7 +75,7 @@
     {% if user.is_authenticated %}
         <form method="post" >
             {% csrf_token %}
-            <input type="text" name="comment" class="form-control" id="comment" placeholder="Enter comment">
+            <input type="text" name="comment" class="form-control" id="comment" placeholder="Enter comment" required>
 
             <button type="submit" name="action" value="comment" class="btn btn-dark">Comment</button>
         </form>
