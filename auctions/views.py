@@ -7,9 +7,7 @@ from django import forms
 
 from .models import User, AuctionCategories, Listing, Bid, Comment, WatchList
 
-
-def index(request):
-    listings = Listing.objects.filter(status=True)
+def serialize_listings(listings):
     clean_listings = []
 
     for listing in listings:
@@ -30,6 +28,11 @@ def index(request):
         
         clean_listings.append(clean_listing)
 
+    return clean_listings
+
+def index(request):
+    listings = Listing.objects.filter(status=True)
+    clean_listings = serialize_listings(listings)
 
     return render(request, "auctions/index.html", {
         "listings": clean_listings
@@ -124,8 +127,8 @@ def create(request):
                 user=User.objects.get(pk=request.POST['user'])
             )
             listing.save()
-            listing_id = Listing.objects.last().id
-            return HttpResponseRedirect(reverse("listing", args=[listing_id]))
+
+            return HttpResponseRedirect(reverse("listing", args=[listing.id]))
 
     
         return render(request, "auctions/create.html", {
@@ -151,8 +154,11 @@ def categories(request):
 
 def category(request, category):
     listings = Listing.objects.filter(category__category__icontains=category, status=True)
+
+    clean_listings = serialize_listings(listings)
+    
     return render(request, "auctions/category.html", {
-        "listings": listings,
+        "listings": clean_listings,
         "category": category
     })
 
