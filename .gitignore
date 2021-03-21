@@ -1,0 +1,10 @@
+
+.DS_Store
+*.pyc
+node_modules
+.env
+.env.example
+**/.env
+auctions/static/admin/*
+auctions/migrations/*
+db.sqlite3
