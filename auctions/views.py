@@ -111,7 +111,7 @@ class NewListingForm(forms.Form):
     desc = forms.CharField(label="Description", widget=forms.Textarea, required=True)
     start_bid = forms.IntegerField(label="Start Bid", min_value=1, required=True)
     image = forms.URLField(label="Image (Optional)", required=False)
-    category = forms.ChoiceField(label="Category (Optional)", choices=list(AuctionCategories.objects.values_list('id', 'category')))
+    # category = forms.ChoiceField(label="Category (Optional)", choices=list(AuctionCategories.objects.values_list('id', 'category')))
     status = forms.BooleanField(widget=forms.HiddenInput(), initial=True, required=True)
 
 def create(request):
